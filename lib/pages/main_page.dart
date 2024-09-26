@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zero_weather/components/bottom_bar.dart';
+import 'package:zero_weather/components/city_bottom_sheet.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -23,6 +24,26 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  // Text City controller & desc controller
+  final TextEditingController _cityController = TextEditingController();
+  final TextEditingController _desController = TextEditingController();
+
+  // Open Bottomsheet
+  void _openBottomSheet() {
+    showModalBottomSheet(
+      showDragHandle: true,
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return CityBottomSheet(
+          cityController: _cityController,
+          desController: _desController,
+          onAddCity: (cityName) {},
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +62,7 @@ class _MainPageState extends State<MainPage> {
       ),
       body: _pages[_selectedIndex],
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: _openBottomSheet,
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomBar(

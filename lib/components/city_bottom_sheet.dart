@@ -1,16 +1,48 @@
+import 'package:easy_autocomplete/easy_autocomplete.dart';
 import 'package:flutter/material.dart';
+import 'package:zero_weather/models/city_inf.dart';
+import 'package:zero_weather/services/city_service.dart';
 
-class CityBottomSheet extends StatelessWidget {
+class CityBottomSheet extends StatefulWidget {
   const CityBottomSheet({
     super.key,
     required this.cityController,
-    required this.onAddCity,
     required this.desController,
+    required this.onSave,
   });
 
   final TextEditingController cityController;
   final TextEditingController desController;
-  final Function(String) onAddCity;
+  final Function(CityInf) onSave;
+
+  @override
+  State<CityBottomSheet> createState() => _CityBottomSheetState();
+}
+
+class _CityBottomSheetState extends State<CityBottomSheet> {
+  List<Map<String, dynamic>> cities = [];
+  List<String> cityNames = <String>[];
+
+  CityInf selectedCity = CityInf(locationKey: 'Def', cityName: 'Def');
+
+  void saveCity() {
+    final cityName = widget.cityController.text;
+    print('Searching $cityName');
+    print('Search in ');
+    print(cities);
+
+    // Search selected city
+    for (var city in cities) {
+      if (city['City'] as String == cityName) {
+        print('City found');
+        selectedCity = CityInf(
+            locationKey: city['Key'],
+            cityName: cityName,
+            description: widget.desController.text);
+        break;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,20 +55,28 @@ class CityBottomSheet extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Type city name
-          TextField(
-            controller: cityController,
+          // Autocomplete for city name
+          EasyAutocomplete(
+            suggestions: cityNames,
+            controller: widget.cityController,
+            onChanged: (value) async {
+              // Fetch data from API
+              // Call to API
+              final fetchedCities = await CityService.fetchCities(value);
+              setState(() {
+                cities = fetchedCities;
+                cityNames = fetchedCities
+                    .map((city) => city['City'] as String)
+                    .toList();
+                print(cityNames);
+              });
+            },
             decoration: InputDecoration(
               labelText: 'Add city',
               border: const OutlineInputBorder(),
               suffixIcon: IconButton(
-                onPressed: () {
-                  cityController.clear();
-                },
-                icon: const Icon(
-                  Icons.cancel_outlined,
-                  size: 30,
-                ),
+                icon: const Icon(Icons.cancel_outlined),
+                onPressed: () => widget.cityController.clear(),
               ),
             ),
           ),
@@ -46,7 +86,7 @@ class CityBottomSheet extends StatelessWidget {
 
           // Description
           TextField(
-            controller: desController,
+            controller: widget.desController,
             minLines: 5,
             maxLines: 6,
             keyboardType: TextInputType.multiline,
@@ -60,11 +100,13 @@ class CityBottomSheet extends StatelessWidget {
           Container(
             margin: const EdgeInsets.symmetric(vertical: 16),
             child: ElevatedButton(
-              onPressed: () {
-                final cityName = cityController.text;
-                if (cityName.isNotEmpty) {
-                  onAddCity(cityName);
-                  Navigator.pop(context); // Close the BottomSheet
+              onPressed: () async {
+                saveCity();
+                if (selectedCity != null) {
+                  widget.onSave(selectedCity);
+                  Navigator.pop(context, selectedCity);
+                } else {
+                  // Show error to user
                 }
               },
               style: ElevatedButton.styleFrom(

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:zero_weather/components/bottom_bar.dart';
 import 'package:zero_weather/components/city_bottom_sheet.dart';
+import 'package:zero_weather/models/city_inf.dart';
+import 'package:zero_weather/pages/cities_page.dart';
+import 'package:zero_weather/services/city_service.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -10,14 +13,28 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
-  final List<Widget> _pages = [
-    const Center(child: Text('Home')),
-    const Center(child: Text('Cities')),
-    const Center(child: Text('Profile')),
-  ];
+  // My saved cities
+  final List<CityInf> savedCities = [];
 
+  // Add new city
+  dynamic _addNewCity(CityInf newCity) async {
+    // Get icon
+    final responseMap =
+        await CityService.fetchWeatherConditions(newCity.locationKey);
+
+    print(responseMap);
+
+    setState(() {
+      newCity.time = responseMap['LocalObservationDateTime'];
+      newCity.iconNumber = responseMap['WeatherIcon'];
+      savedCities.add(newCity);
+      print('City received ${newCity.cityName}');
+    });
+  }
+
+  // Change between screens
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -38,7 +55,7 @@ class _MainPageState extends State<MainPage> {
         return CityBottomSheet(
           cityController: _cityController,
           desController: _desController,
-          onAddCity: (cityName) {},
+          onSave: _addNewCity,
         );
       },
     );
@@ -46,24 +63,40 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Pages
+    final List<Widget> pages = [
+      const Center(child: Text('Home')),
+      CitiesPage(cities: savedCities),
+      const Center(child: Text('Profile')),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 5,
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.cloudy_snowing),
-            Text(
+            Image.asset(
+              'assets/cloudy.png',
+              height: 32,
+              width: 32,
+              fit: BoxFit.cover,
+            ),
+            const Text(
               'WeatherForemost',
               style: TextStyle(color: Colors.white),
             ),
           ],
         ),
       ),
-      body: _pages[_selectedIndex],
+      body: pages[_selectedIndex],
       floatingActionButton: FloatingActionButton(
         onPressed: _openBottomSheet,
-        child: const Icon(Icons.add),
+        backgroundColor: Colors.lightBlue,
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
       bottomNavigationBar: BottomBar(
         currentIndex: _selectedIndex,

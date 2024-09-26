@@ -37,7 +37,7 @@ class _AutocompleteCityState extends State<AutocompleteCity> {
         border: const OutlineInputBorder(),
         suffixIcon: IconButton(
           icon: const Icon(Icons.cancel_outlined),
-          onPressed: () => widget.controller.clear,
+          onPressed: () => widget.controller.clear(),
         ),
       ),
     );

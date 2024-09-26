@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zero_weather/pages/location_page.dart';
+import 'package:zero_weather/pages/main_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,10 +15,10 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const LocationPage(),
+      home: const MainPage(),
     );
   }
 }

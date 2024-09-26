@@ -13,7 +13,7 @@ class CitiesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: cities.isEmpty // Verify if the list is empty
-          ? Center(child: NoData())
+          ? const Center(child: NoData())
           : ListView.builder(
               itemCount: cities.length,
               itemBuilder: (context, index) {

@@ -69,8 +69,8 @@ class CityCard extends StatelessWidget {
                 // Imagen cargada desde la URL
                 Image.network(
                   imageUrl,
-                  width: 60,
-                  height: 60,
+                  width: 80,
+                  height: 80,
                   errorBuilder: (context, error, stackTrace) {
                     return const Icon(
                       Icons.error,

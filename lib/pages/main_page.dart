@@ -24,13 +24,10 @@ class _MainPageState extends State<MainPage> {
     final responseMap =
         await CityService.fetchWeatherConditions(newCity.locationKey);
 
-    print(responseMap);
-
     setState(() {
       newCity.time = responseMap['LocalObservationDateTime'];
       newCity.iconNumber = responseMap['WeatherIcon'];
       savedCities.add(newCity);
-      print('City received ${newCity.cityName}');
     });
   }
 

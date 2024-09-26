@@ -27,14 +27,10 @@ class _CityBottomSheetState extends State<CityBottomSheet> {
 
   void saveCity() {
     final cityName = widget.cityController.text;
-    print('Searching $cityName');
-    print('Search in ');
-    print(cities);
 
     // Search selected city
     for (var city in cities) {
       if (city['City'] as String == cityName) {
-        print('City found');
         selectedCity = CityInf(
             locationKey: city['Key'],
             cityName: cityName,
@@ -68,7 +64,6 @@ class _CityBottomSheetState extends State<CityBottomSheet> {
                 cityNames = fetchedCities
                     .map((city) => city['City'] as String)
                     .toList();
-                print(cityNames);
               });
             },
             decoration: InputDecoration(
@@ -102,12 +97,8 @@ class _CityBottomSheetState extends State<CityBottomSheet> {
             child: ElevatedButton(
               onPressed: () async {
                 saveCity();
-                if (selectedCity != null) {
-                  widget.onSave(selectedCity);
-                  Navigator.pop(context, selectedCity);
-                } else {
-                  // Show error to user
-                }
+                widget.onSave(selectedCity);
+                Navigator.pop(context, selectedCity);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.lightBlue,

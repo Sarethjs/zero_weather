@@ -57,15 +57,27 @@ class CityBottomSheet extends StatelessWidget {
           ),
 
           // Save city button
-          ElevatedButton(
-            onPressed: () {
-              final cityName = cityController.text;
-              if (cityName.isNotEmpty) {
-                onAddCity(cityName);
-                Navigator.pop(context); // Close the BottomSheet
-              }
-            },
-            child: const Text('Add City'),
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 16),
+            child: ElevatedButton(
+              onPressed: () {
+                final cityName = cityController.text;
+                if (cityName.isNotEmpty) {
+                  onAddCity(cityName);
+                  Navigator.pop(context); // Close the BottomSheet
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.lightBlue,
+                disabledBackgroundColor: Colors.grey,
+                foregroundColor: Colors.white,
+                minimumSize: const Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text('Save City'),
+            ),
           ),
         ],
       ),

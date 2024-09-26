@@ -30,7 +30,9 @@ class CityBottomSheet extends StatelessWidget {
               labelText: 'Add city',
               border: const OutlineInputBorder(),
               suffixIcon: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  cityController.clear();
+                },
                 icon: const Icon(
                   Icons.cancel_outlined,
                   size: 30,
